@@ -1,8 +1,8 @@
-# Server Monitoring Stack
-
 <p align="center">
-  <img src="https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/images/prometheus-logo.png" alt="Monitoring Stack Logo" width="180">
+  <img src="img/amlogo.svg" alt="My Logo" width="100" height="100">
 </p>
+
+# Server Monitoring Stack
 
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge&logo=open-source-initiative&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
