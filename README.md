@@ -81,6 +81,7 @@ The stack leverages Docker containers to provide a consistent, reproducible envi
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+
 This architecture provides:
 
 1. **Centralized metrics collection** - Prometheus scrapes metrics from all exporters
