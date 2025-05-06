@@ -294,4 +294,252 @@ Then add the exporter to your Prometheus configuration:
 
 The stack comes with pre-configured dashboards for:
 
-- **System Overview**: CPU, memory
+- **System Overview**: CPU, memory, disk, network metrics for hosts
+- **Container Performance**: Resource usage metrics for Docker containers
+- **Node Exporter Full**: Comprehensive host metrics dashboard
+- **Prometheus Stats**: Monitoring of the monitoring system itself
+
+### Importing Additional Dashboards
+
+To import additional dashboards:
+
+1. Access Grafana at http://localhost:3001
+2. Go to "Dashboards" > "Import"
+3. Enter the dashboard ID or upload the JSON file
+4. Select the Prometheus data source
+5. Click "Import"
+
+Popular dashboard IDs:
+- Node Exporter Full: 1860
+- Docker & System Monitoring: 893
+- Prometheus 2.0 Stats: 10000
+
+## Security Considerations
+
+### Authentication
+
+- Change default credentials for all services
+- Consider setting up OAuth or LDAP authentication for Grafana
+- Implement API authentication for Prometheus
+
+### Network Security
+
+- Use a reverse proxy (like NGINX) for TLS termination
+- Restrict access to management ports
+- Configure firewalls to limit access to monitoring services
+
+### Data Protection
+
+- Implement regular backups of Prometheus and Grafana data
+- Consider encrypting sensitive data in configuration files
+- Scrub sensitive information from metrics and logs
+
+### Example NGINX Configuration
+
+```nginx
+server {
+    listen 80;
+    server_name monitoring.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name monitoring.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/monitoring.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/monitoring.example.com/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:3001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+## Maintenance
+
+### Backup and Restore
+
+To back up the monitoring stack:
+
+```bash
+# Stop the stack
+docker-compose stop
+
+# Back up data volumes
+tar -czvf prometheus-data-backup.tar.gz /path/to/prometheus_data
+tar -czvf grafana-data-backup.tar.gz /path/to/grafana_data
+
+# Restart the stack
+docker-compose start
+```
+
+To restore from backup:
+
+```bash
+# Stop the stack
+docker-compose stop
+
+# Restore data volumes
+tar -xzvf prometheus-data-backup.tar.gz -C /path/to/restore
+tar -xzvf grafana-data-backup.tar.gz -C /path/to/restore
+
+# Update volume paths in docker-compose.yml if necessary
+# Restart the stack
+docker-compose start
+```
+
+### Updates
+
+To update the monitoring stack components:
+
+```bash
+# Pull the latest images
+docker-compose pull
+
+# Restart with the new images
+docker-compose up -d
+```
+
+For major version upgrades, check the release notes for each component to ensure compatibility.
+
+## Troubleshooting
+
+### Common Issues
+
+#### Grafana Can't Connect to Prometheus
+
+**Symptoms**: Grafana dashboards show "No data" or connection errors
+
+**Solution**:
+1. Check if Prometheus is running: `docker-compose ps prometheus`
+2. Verify network connectivity: `docker exec -it grafana ping prometheus`
+3. Check Grafana data source configuration:
+   - URL should be `http://prometheus:9090`
+   - Access should be set to `Server (default)`
+
+#### High Disk Usage
+
+**Symptoms**: Disk space fills up rapidly on the host system
+
+**Solution**:
+1. Check Prometheus storage usage: `docker exec -it prometheus du -sh /prometheus`
+2. Adjust retention period in `prometheus.yml`:
+   ```yaml
+   storage:
+     tsdb:
+       retention.time: 15d
+   ```
+3. Consider implementing a downsampling strategy for older metrics
+
+#### CPU/Memory Issues
+
+**Symptoms**: High CPU or memory usage on the host system
+
+**Solution**:
+1. Reduce scrape frequency in `prometheus.yml`:
+   ```yaml
+   global:
+     scrape_interval: 30s  # Default is 15s
+   ```
+2. Limit container resources in `docker-compose.yml`:
+   ```yaml
+   prometheus:
+     # ...
+     deploy:
+       resources:
+         limits:
+           cpus: '0.5'
+           memory: 1G
+   ```
+
+### Logs
+
+View logs for troubleshooting:
+
+```bash
+# View logs for all services
+docker-compose logs
+
+# View logs for a specific service
+docker-compose logs -f prometheus
+
+# View logs with timestamps
+docker-compose logs --timestamps
+```
+
+## Performance Tuning
+
+### Prometheus Optimization
+
+For larger deployments, consider the following optimizations:
+
+1. Adjust scrape intervals based on metric importance:
+   ```yaml
+   scrape_configs:
+     - job_name: 'critical-systems'
+       scrape_interval: 10s
+       # ...
+     - job_name: 'non-critical-systems'
+       scrape_interval: 60s
+       # ...
+   ```
+
+2. Use the `sample_limit` parameter to prevent excessive cardinality:
+   ```yaml
+   global:
+     scrape_config:
+       sample_limit: 10000
+   ```
+
+3. Implement federation for large-scale deployments:
+   ```yaml
+   scrape_configs:
+     - job_name: 'prometheus-federation'
+       honor_labels: true
+       metrics_path: '/federate'
+       params:
+         'match[]':
+           - '{job="node"}'
+       static_configs:
+         - targets:
+           - 'prometheus-secondary-1:9090'
+           - 'prometheus-secondary-2:9090'
+   ```
+
+### Grafana Dashboard Efficiency
+
+For better Grafana performance:
+
+1. Limit the time range of dashboards (default view should be last 6-12 hours)
+2. Use appropriate aggregation functions (rate, increase, avg_over_time)
+3. Set reasonable refresh intervals (30s or more)
+4. Consider breaking complex dashboards into multiple simpler dashboards
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch:
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m 'Add some amazing feature'
+   ```
+4. Push to the branch:
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
