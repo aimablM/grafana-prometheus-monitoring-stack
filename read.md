@@ -130,7 +130,7 @@ The stack leverages Docker containers to provide a consistent, reproducible envi
 ```
 
 <p align="center">
-  <img src="docs/images/stack-deployment.png" alt="Stack Deployment" width="90%"/>
+  <img src="img/docker-compose-image-pull.png" alt="Stack Deployment" width="90%"/>
   <br>
   <em>Monitoring stack deployment in action via Docker Compose</em>
 </p>
@@ -153,7 +153,7 @@ Time series database for metrics storage and retrieval. Prometheus acts as the c
 Visualization and dashboarding tool that connects to Prometheus to display metrics in customizable dashboards. Grafana provides advanced visualization options, alerting capabilities, and user management.
 
 <p align="center">
-  <img src="docs/images/grafana-login.png" alt="Grafana Login" width="70%"/>
+  <img src="img/grafana-login.png" alt="Grafana Login" width="70%"/>
   <br>
   <em>Grafana Login Interface</em>
 </p>
@@ -162,7 +162,7 @@ Visualization and dashboarding tool that connects to Prometheus to display metri
 System metrics collection agent that exports hardware and OS metrics from the host system. Node Exporter provides detailed information about CPU, memory, disk, network, and other system resources.
 
 <p align="center">
-  <img src="docs/images/node-exporter.png" alt="Node Exporter Dashboard" width="90%"/>
+  <img src="img/ec2-dashboard.png" alt="Node Exporter Dashboard" width="90%"/>
   <br>
   <em>Node Exporter Full Dashboard with System Metrics</em>
 </p>
@@ -218,7 +218,7 @@ To deploy the monitoring stack, you'll need:
    ```
 
 <p align="center">
-  <img src="docs/images/docker-desktop.png" alt="Docker Desktop" width="80%"/>
+  <img src="img/images-started.png" alt="Docker Desktop" width="80%"/>
   <br>
   <em>Docker Desktop showing the running monitoring stack containers</em>
 </p>
@@ -266,7 +266,7 @@ To monitor additional servers:
    ```
 
 <p align="center">
-  <img src="docs/images/prometheus-config.png" alt="Prometheus Configuration" width="80%"/>
+  <img src="img/grafana-source-config.png" alt="Prometheus Configuration" width="80%"/>
   <br>
   <em>Prometheus Data Source Configuration in Grafana</em>
 </p>
@@ -377,13 +377,13 @@ The stack comes with pre-configured dashboards for:
 - **Prometheus Stats**: Monitoring of the monitoring system itself
 
 <p align="center">
-  <img src="docs/images/container-dashboard-1.png" alt="Container Dashboard" width="90%"/>
+  <img src="img/docker-container-dashboard.png" alt="Container Dashboard" width="90%"/>
   <br>
   <em>Docker Container & Host Metrics Overview Dashboard</em>
 </p>
 
 <p align="center">
-  <img src="docs/images/system-monitoring.png" alt="System Monitoring" width="90%"/>
+  <img src="img/container-dashboard.png" alt="System Monitoring" width="90%"/>
   <br>
   <em>Docker and System Monitoring Dashboard</em>
 </p>
@@ -404,7 +404,7 @@ Popular dashboard IDs:
 - Prometheus 2.0 Stats: 10000
 
 <p align="center">
-  <img src="docs/images/grafana-home.png" alt="Grafana Home" width="80%"/>
+  <img src="img/grafana-home.png" alt="Grafana Home" width="80%"/>
   <br>
   <em>Grafana Home Dashboard with Getting Started Guide</em>
 </p>
